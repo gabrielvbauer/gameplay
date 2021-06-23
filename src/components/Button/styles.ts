@@ -1,4 +1,4 @@
-import { theme } from './../../global/styles/theme';
+import { theme } from '../../global/styles/theme';
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -14,8 +14,8 @@ export const styles = StyleSheet.create({
     flex: 1,
     color: theme.colors.heading,
     fontSize: 15,
-    fontFamily: theme.fonts.text500,
-    textAlign: 'center'
+    textAlign: 'center',
+    fontFamily: theme.fonts.text500
   },
   iconWrapper: {
     width: 56,
