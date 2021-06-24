@@ -29,6 +29,24 @@ export function Guilds({ handleGuildsSelected }: Props) {
       name: 'Valozinho',
       icon: 'image.png',
       owner: false
+    },
+    {
+      id: '4',
+      name: 'Valozinho',
+      icon: 'image.png',
+      owner: false
+    },
+    {
+      id: '5',
+      name: 'Valozinho',
+      icon: 'image.png',
+      owner: false
+    },
+    {
+      id: '6',
+      name: 'Valozinho',
+      icon: 'image.png',
+      owner: false
     }
   ]
 
@@ -44,7 +62,9 @@ export function Guilds({ handleGuildsSelected }: Props) {
           />
         )}
         showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={() => <ListDivider />}
+        ItemSeparatorComponent={() => <ListDivider isCentered />}
+        ListHeaderComponent={() => <ListDivider isCentered />}
+        contentContainerStyle={{ paddingBottom: 68, paddingTop: 104 }}
         style={styles.guilds}
       />
     </View>
