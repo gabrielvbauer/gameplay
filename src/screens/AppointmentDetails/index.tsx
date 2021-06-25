@@ -3,6 +3,7 @@ import { BorderlessButton } from 'react-native-gesture-handler';
 import { Fontisto } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import { api } from '../../services/api';
+import * as Linking from 'expo-linking'
 
 import {
   View,
@@ -68,6 +69,10 @@ export function AppointmentDetails() {
       })
   }
 
+  function handleOpenGuild(){
+    Linking.openURL(widget.instant_invite)
+  }
+
   useEffect(() => {
     fetchGuildWidget()
   }, [])
@@ -123,11 +128,15 @@ export function AppointmentDetails() {
         </>
       }
 
-        <View style={styles.footer}>
-          <ButtonIcon 
-            title="Entrar na partida"
-          />
-        </View>
+        {
+          guildSelected.guild.owner &&
+          <View style={styles.footer}>
+            <ButtonIcon 
+              title="Entrar na partida"
+              onPress={handleOpenGuild}
+            />
+          </View>
+        }
     </Background>
   );
 }
