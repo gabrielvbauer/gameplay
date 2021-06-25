@@ -1,22 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BorderlessButton } from 'react-native-gesture-handler';
 import { Fontisto } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
+import { api } from '../../services/api';
 
 import {
   View,
   ImageBackground,
   Text,
-  FlatList
+  FlatList,
+  Alert
 } from 'react-native';
 
 import { Background } from '../../components/Background'
 import { Header } from '../../components/Header';
 import BannerImg from '../../assets/banner.png'
 import { ListHeader } from '../../components/ListHeader';
-import { Member } from '../../components/Member';
+import { Member, MemberProps } from '../../components/Member';
 import { ListDivider } from '../../components/ListDivider';
 import { ButtonIcon } from '../../components/ButtonIcon';
+import { Load } from '../../components/Load';
 
 import { styles } from './styles';
 import { theme } from '../../global/styles/theme';
@@ -26,25 +29,35 @@ type Params = {
   guildSelected: AppointmentProps
 }
 
+type GuildWidget = {
+  id: string,
+  name: string,
+  instant_invite: string,
+  members: MemberProps[],
+}
+
 export function AppointmentDetails() {
+  const [widget, setWidget] = useState<GuildWidget>({} as GuildWidget);
+  const [loading, setLoading] = useState(true)
+
   const route = useRoute();
   const { guildSelected } = route.params as Params
 
+  async function fetchGuildWidget(){
+    try {
+      const response = await api.get(`/guilds/${guildSelected.guild.id}/widget.json`)
+      setWidget(response.data)
+      setLoading(false)
+    } catch {
+      Alert.alert("Verifique as configurações do servidor. Será que o Widget está habilitado?")
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  const members = [
-    {
-      id: '1',
-      username: 'Gabriel',
-      avatar_url: 'https://github.com/gabrielvbauer.png',
-      status: 'online'
-    },
-    {
-      id: '2',
-      username: 'Gabriel',
-      avatar_url: 'https://github.com/gabrielvbauer.png',
-      status: 'offline'
-    },
-  ]
+  useEffect(() => {
+    fetchGuildWidget()
+  }, [])
 
   return (
     <Background>
@@ -75,28 +88,32 @@ export function AppointmentDetails() {
           </Text>
         </View>
       </ImageBackground>
+      
+      {
+        loading ? <Load /> :
+        <>
+          <ListHeader 
+            title="Jogadores"
+            subtitle={`Total ${widget.members.length}`}
+          />
 
-      <ListHeader 
-        title="Jogadores"
-        subtitle="Total 3"
-      />
+          <FlatList
+            data={widget.members}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <Member data={item} />         
+            )}
+            ItemSeparatorComponent={() => <ListDivider isCentered/>}
+            style={styles.members}
+          />
+        </>
+      }
 
-      <FlatList
-        data={members}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <Member data={item} />         
-        )}
-        ItemSeparatorComponent={() => <ListDivider isCentered/>}
-        style={styles.members}
-      />
-
-      <View style={styles.footer}>
-        <ButtonIcon 
-          title="Entrar na partida"
-        />
-      </View>
-
+        <View style={styles.footer}>
+          <ButtonIcon 
+            title="Entrar na partida"
+          />
+        </View>
     </Background>
   );
 }
