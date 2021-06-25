@@ -69,7 +69,7 @@ export function Home() {
           <>
             <ListHeader
               title="Partidas agendadas"
-              subtitle="Total 6"
+              subtitle={`Total ${appointments.length}`}
             />
 
             <FlatList 
